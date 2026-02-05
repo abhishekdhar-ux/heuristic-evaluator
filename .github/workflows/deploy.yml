@@ -1,0 +1,130 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+---
+
+### C5. Commit the File
+
+1. Scroll down to the **Commit changes** section
+2. You'll see:
+   - **Commit message:** Leave as "Create deploy.yml" or type your own
+   - **Description:** (optional) You can leave this empty
+   - **Commit directly to the `main` branch** should be selected
+3. Click the green **Commit changes** button
+
+---
+
+### C6. Verify the File Was Created
+
+After committing, you should see:
+- A new folder `.github` in your repository
+- Inside it: `workflows` folder
+- Inside that: `deploy.yml` file
+
+Your repo structure now looks like:
+```
+heuristic-evaluator/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml    ← New file
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── .gitignore
+├── README.md
+├── index.html
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+└── vite.config.js
+```
+
+---
+
+### C7. Watch the Workflow Run
+
+1. Click the **Actions** tab at the top of your repository
+2. You'll see a workflow running called "Deploy to GitHub Pages"
+3. Click on it to see the progress
+4. Wait for all steps to show ✅ green checkmarks (takes 1-2 minutes)
+
+**If you see a ❌ red X:** Click on it to see the error message and let me know what it says.
+
+---
+
+### C8. Troubleshooting
+
+**"Pages not enabled" error?**
+→ Continue to Step D (Enable GitHub Pages) first, then re-run the workflow
+
+**"npm ci" failed?**
+→ Make sure `package.json` was uploaded correctly with all dependencies
+
+**Workflow doesn't appear?**
+→ Make sure the file is named exactly `.github/workflows/deploy.yml`
+
+---
+
+## Next: Step D - Enable GitHub Pages
+
+After the workflow file is created:
+
+1. Click **Settings** tab (top right of repo)
+2. Scroll down left sidebar → Click **Pages**
+3. Under "Build and deployment":
+   - **Source:** Select **GitHub Actions** (not "Deploy from a branch")
+4. Click **Save**
+5. Go back to **Actions** tab
+6. If the workflow failed before, click **Re-run all jobs**
+
+---
+
+## Step E: Get Your Live URL
+
+Once the workflow shows ✅ success:
+
+1. Go to **Settings** → **Pages**
+2. You'll see a green box with your URL:
+```
+   Your site is live at https://YOUR_USERNAME.github.io/heuristic-evaluator/
